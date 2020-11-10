@@ -1,47 +1,37 @@
-'''
-염색체는 0과 1로 이루어진 길이 10의 수열,
-[0, 1, 0, 1, 0, 1, 0, 1, 0, 1]에 가까울수록 점수가 높다.
-'''
-
 import pyGene
 import random
 
-n_of_en = 50
-epoch = 5000
+
+def cost(chromosome: list):
+    result = 0
+    target = [2**k for k in range(10)]
+    for c, t in zip(chromosome, target):
+        if c != t:
+            result += 1
+    return result
 
 
-def cost(gene):
-    c = 0
-    target = [3*i for i in range(50)]
-    for dna, t_dna in zip(gene.gene, target):
-        if dna !=t_dna:
-            c+=1
-    return c
+n_of_entities = 100
+len_of_chromosome = 10
+dna_range = (0, 2000)
 
+initial_gen = [pyGene.Entity([random.randint(*dna_range) for _ in range(len_of_chromosome)])
+               for __ in range(n_of_entities)]
 
-def repair(gene):
-    g = gene
-    for dna in g:
-        if not (0<=dna<=150):
-            dna = random.choice((1, 0))
-    return g # 확인요
+environment = pyGene.Environment(
+    entities=initial_gen
+)
 
-gen = []
-for i in range(n_of_en):
-    gen.append([random.randint(0, 150) for _ in range(50)])
-
-env = []
-for chr in gen:
-    env.append(
-        pyGene.Entity(
-            gene=chr,
-            repair=repair,
-            dna_range=(0, 150)
-        )
-    )
-
-Env = pyGene.Environment(initial_entities=env)
-
-gen = Env.optimize(cost_function=cost, epoch=epoch)
-
-print(gen[0].gene)
+reached, optimized = environment.optimize(
+    epoch=50000,
+    cost_function=cost,
+    SE_method=pyGene.selection_tournament,
+    SE_tournament_p=0.8,
+    CV_method=pyGene.crossover_uniform,
+    CV_uniform_p=0.8,
+    MU_method=pyGene.mutation_basic,
+    MU_basic_p=0.05,
+    DNA_range=dna_range,
+    Log=True,
+    Threshold=0
+)
