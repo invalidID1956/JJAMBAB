@@ -39,8 +39,7 @@ class Environment(object):
 
             if logging:
                 if k % 100 == 0:
-                    print(k, "번째 시행: \n", "1) Cost Avg: ", sum([cost_f(e.chromosome) for e in new_gen])
-                          /self.n_of_entities, '\n2) Chromosome: ', new_gen[0].chromosome)
+                    print(k, "번째 시행: \n", "1) Cost Avg: ", sum([cost_f(e.chromosome) for e in new_gen])/self.n_of_entities, '\n2) Chromosome: ', new_gen[0].chromosome)
 
         return 0, current_gen
 
