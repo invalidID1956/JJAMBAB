@@ -35,13 +35,13 @@ class Environment(object):
 
             best_chromosome = sorted(current_gen, key=lambda e: cost_f(e.chromosome))[0]
             if cost_f(best_chromosome.chromosome) <= threshold:
-                return 1, current_gen  # 최적해 도달 완료
+                return 1, best_chromosome  # 최적해 도달 완료
 
             if logging:
                 if k % 100 == 0:
-                    print(k, "번째 시행: \n", "1) Cost Avg: ", sum([cost_f(e.chromosome) for e in new_gen])/self.n_of_entities, '\n2) Chromosome: ', new_gen[0].chromosome)
+                    print(k, "번째 시행: \n", "1) Best Cost: ", cost_f(best_chromosome.chromosome), '\n2) Chromosome: ', best_chromosome.chromosome)
 
-        return 0, current_gen
+        return 0, best_chromosome
 
 
 def selection_tournament(generation: list, params: dict):
